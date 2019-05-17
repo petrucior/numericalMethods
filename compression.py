@@ -12,6 +12,12 @@ import matplotlib.image as mpimg
 from scipy import linalg
 import numpy as np
 
+# RBG to Grayscale function
+def rgb2gray(rgb):
+    r, g, b = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
+    gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
+    return gray
+
 if __name__ == '__main__':
     print("ipython compression.py image reduzedDimension"+ "\n"+ 
           "- reduzedDimension: Dimension reduzed to reduction")
@@ -19,11 +25,14 @@ if __name__ == '__main__':
     k = int(sys.argv[2])
     # Reading image
     img = mpimg.imread(file)
+    # Converting RGB to Grayscale
+    img = rgb2gray( img )
+    print(img.shape)
     m = img.shape[0] 
     n = img.shape[1]
     
     # Singular Value Decomposition
-    U, S, V = linalg.svd( img[:, :, 0] )
+    U, S, V = linalg.svd( img[:, :] )
     print( "Dimensao de U, S, V, respectivamente" )
     print( U.shape, S.shape, V.shape )
 
@@ -32,7 +41,7 @@ if __name__ == '__main__':
     #Sigma[:n, :n] = np.diag(S)
     
     #imgReconstruct = np.dot( np.dot( U, Sigma ), V )
-    #imgplot = plt.imshow( imgReconstruct )
+    #imgplot = plt.imshow( imgReconstruct, cmap=plt.get_cmap('gray'), vmin=0, vmax=1)
 
 
     # Reduzed SVD
@@ -44,7 +53,8 @@ if __name__ == '__main__':
     print( reduzedU.shape, reduzedS.shape, reduzedV.shape )
 
     imgReduzed = np.dot( np.dot( reduzedU, reduzedS ), reduzedV )
-    imgplot = plt.imshow( imgReduzed )
+    imgplot = plt.imshow( imgReduzed, cmap=plt.get_cmap('gray'), vmin=0, vmax=1)
+    
     
     plt.show()
     
